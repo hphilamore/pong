@@ -74,16 +74,24 @@ def draw_board(colour=WHITE, *, screen=window):
 def draw_paddle(pad_height, pad_width, paddle_pos, paddle_vel, colour=(0,255,0), *, screen=window):
     "Draws a rectangular paddle, of the height and width specified, centered at the position specified"
 
-    # update paddle's vertical position, keep paddle on the screen
-    if (paddle_pos[y] > HALF_PAD_HEIGHT and paddle_pos[y] < HEIGHT - HALF_PAD_HEIGHT):
-        paddle_pos[y] += paddle_vel
+    # # update paddle's vertical position, keep paddle on the screen
+    # # if paddle in not off the board keep moving
+    # if (paddle_pos[y] > HALF_PAD_HEIGHT and paddle_pos[y] < HEIGHT - HALF_PAD_HEIGHT):
+    #     paddle_pos[y] += paddle_vel
 
-    elif (paddle_pos[y] == HALF_PAD_HEIGHT and paddle_vel > 0):
-        paddle_pos[y] += paddle_vel
+    # # if paddle is touching the top of the board, but controller is moving paddle towards the middle of the board, keep moving
+    # elif (paddle_pos[y] == HALF_PAD_HEIGHT and paddle_vel > 0):
+    #     paddle_pos[y] += paddle_vel
 
-    elif (paddle_pos[y] == HEIGHT - HALF_PAD_HEIGHT and paddle_vel < 0):
-        paddle_pos[y] += paddle_vel
+    # # if paddle is touching the bottom of the board, but controller is moving paddle towards the middle of the board, keep moving
+    # elif (paddle_pos[y] == HEIGHT - HALF_PAD_HEIGHT and paddle_vel < 0):
+    #     paddle_pos[y] += paddle_vel
 
+        # if paddle in not off the board, or touching the edge but moving towards the centre, keep moving
+    if ((paddle_pos[y] > HALF_PAD_HEIGHT and paddle_pos[y] < HEIGHT - HALF_PAD_HEIGHT) or
+        (paddle_pos[y] == HALF_PAD_HEIGHT and paddle_vel > 0) or
+        (paddle_pos[y] == HEIGHT - HALF_PAD_HEIGHT and paddle_vel < 0)):
+        paddle_pos[y] += paddle_vel
 
     pygame.draw.polygon(screen, colour, 
             [[paddle_pos[x] - pad_width/2, paddle_pos[y] - pad_height/2], 
