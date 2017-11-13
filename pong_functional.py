@@ -16,12 +16,14 @@ BLACK = (0,0,0)
 #globals
 WIDTH = 600
 HEIGHT = 400       
-BALL_RADIUS = 20
+
 PAD_WIDTH = 8
 PAD_HEIGHT = 80
 HALF_PAD_WIDTH = PAD_WIDTH // 2
 HALF_PAD_HEIGHT = PAD_HEIGHT // 2
-ball_pos = [0,0]
+
+BALL_RADIUS = 20
+BALL_POS = [0,0]
 ball_vel = [0,0]
 paddle1_vel = 0
 paddle2_vel = 0
@@ -37,8 +39,8 @@ pygame.display.set_caption('Hello World')
 # helper function that spawns a ball, returns a position vector and a velocity vector
 # if right is True, spawn to the right, else spawn to the left
 def ball_init(right):
-    global ball_pos, ball_vel # these are vectors stored as lists
-    ball_pos = [WIDTH//2,HEIGHT//2]
+    global BALL_POS, ball_vel # these are vectors stored as lists
+    BALL_POS = [WIDTH//2,HEIGHT//2]
     horz = random.randrange(2,4)
     vert = random.randrange(1,3)
     
@@ -68,10 +70,14 @@ def draw_paddle(pad_height, pad_width, paddle_pos, colour=(0,255,0), *, screen=w
              [paddle_pos[x] + pad_width/2, paddle_pos[y] + pad_height/2], 
              [paddle_pos[x] + pad_width/2, paddle_pos[y] - pad_height/2]])
 
+def draw_ball(radius, ball_pos, colour=(0,255,0), *, screen=window):
+    "Draws a circle of the radius specified, centered about the point specified"
+    pygame.draw.circle(screen, colour, ball_pos, radius)
+
 
 #draw function of canvas
 def draw(canvas):
-    global paddle1_pos, paddle2_pos, ball_pos, ball_vel, l_score, r_score
+    global paddle1_pos, paddle2_pos, BALL_POS, ball_vel, l_score, r_score
            
     canvas.fill(BLACK)
     # draw the board
@@ -100,14 +106,11 @@ def draw(canvas):
         paddle2_pos[1] += paddle2_vel
 
     #update ball
-    ball_pos[0] += int(ball_vel[0])
-    ball_pos[1] += int(ball_vel[1])
+    BALL_POS[0] += int(ball_vel[0])
+    BALL_POS[1] += int(ball_vel[1])
 
     #draw paddles and ball
-    pygame.draw.circle(canvas, RED, ball_pos, 20, 0)
-
-    draw_paddle(PAD_HEIGHT, PAD_WIDTH, paddle1_pos, colour=(255,255,0))
-    
+    #pygame.draw.circle(canvas, RED, ball_pos, 20)
     # pygame.draw.polygon(canvas, GREEN, 
     #     [[paddle1_pos[x] - HALF_PAD_WIDTH, paddle1_pos[y] - HALF_PAD_HEIGHT], 
     #      [paddle1_pos[x] - HALF_PAD_WIDTH, paddle1_pos[y] + HALF_PAD_HEIGHT], 
@@ -115,34 +118,44 @@ def draw(canvas):
     #      [paddle1_pos[x] + HALF_PAD_WIDTH, paddle1_pos[y] - HALF_PAD_HEIGHT]], 0)
 
 
-    pygame.draw.polygon(canvas, GREEN, 
-        [[paddle2_pos[x] - HALF_PAD_WIDTH, paddle2_pos[y] - HALF_PAD_HEIGHT],
-         [paddle2_pos[x] - HALF_PAD_WIDTH, paddle2_pos[y] + HALF_PAD_HEIGHT], 
-         [paddle2_pos[x] + HALF_PAD_WIDTH, paddle2_pos[y] + HALF_PAD_HEIGHT], 
-         [paddle2_pos[x] + HALF_PAD_WIDTH, paddle2_pos[y] - HALF_PAD_HEIGHT]], 0)
+    # pygame.draw.polygon(canvas, GREEN, 
+    #     [[paddle2_pos[x] - HALF_PAD_WIDTH, paddle2_pos[y] - HALF_PAD_HEIGHT],
+    #      [paddle2_pos[x] - HALF_PAD_WIDTH, paddle2_pos[y] + HALF_PAD_HEIGHT], 
+    #      [paddle2_pos[x] + HALF_PAD_WIDTH, paddle2_pos[y] + HALF_PAD_HEIGHT], 
+    #      [paddle2_pos[x] + HALF_PAD_WIDTH, paddle2_pos[y] - HALF_PAD_HEIGHT]], 0)
+
+   
+
+    draw_ball(BALL_RADIUS, BALL_POS, RED)
+
+    draw_paddle(PAD_HEIGHT, PAD_WIDTH, paddle1_pos, GREEN)
+
+    draw_paddle(PAD_HEIGHT, PAD_WIDTH, paddle2_pos, colour=(0,0,255))
+    
+    
 
     #ball collision check on top and bottom walls
-    if int(ball_pos[1]) <= BALL_RADIUS:
+    if int(BALL_POS[1]) <= BALL_RADIUS:
         ball_vel[1] = - ball_vel[1]
-    if int(ball_pos[1]) >= HEIGHT + 1 - BALL_RADIUS:
+    if int(BALL_POS[1]) >= HEIGHT + 1 - BALL_RADIUS:
         ball_vel[1] = -ball_vel[1]
     
     #ball collison check on gutters or paddles
-    if (int(ball_pos[0]) <= BALL_RADIUS + PAD_WIDTH 
-        and int(ball_pos[1]) in range(paddle1_pos[1] 
+    if (int(BALL_POS[0]) <= BALL_RADIUS + PAD_WIDTH 
+        and int(BALL_POS[1]) in range(paddle1_pos[1] 
             - HALF_PAD_HEIGHT,paddle1_pos[1] + HALF_PAD_HEIGHT,1)):
         ball_vel[0] = -ball_vel[0]
         ball_vel[0] *= 1.1
         ball_vel[1] *= 1.1
-    elif int(ball_pos[0]) <= BALL_RADIUS + PAD_WIDTH:
+    elif int(BALL_POS[0]) <= BALL_RADIUS + PAD_WIDTH:
         r_score += 1
         ball_init(True)
         
-    if int(ball_pos[0]) >= WIDTH + 1 - BALL_RADIUS - PAD_WIDTH and int(ball_pos[1]) in range(paddle2_pos[1] - HALF_PAD_HEIGHT,paddle2_pos[1] + HALF_PAD_HEIGHT,1):
+    if int(BALL_POS[0]) >= WIDTH + 1 - BALL_RADIUS - PAD_WIDTH and int(BALL_POS[1]) in range(paddle2_pos[1] - HALF_PAD_HEIGHT,paddle2_pos[1] + HALF_PAD_HEIGHT,1):
         ball_vel[0] = -ball_vel[0]
         ball_vel[0] *= 1.1
         ball_vel[1] *= 1.1
-    elif int(ball_pos[0]) >= WIDTH + 1 - BALL_RADIUS - PAD_WIDTH:
+    elif int(BALL_POS[0]) >= WIDTH + 1 - BALL_RADIUS - PAD_WIDTH:
         l_score += 1
         ball_init(False)
 
