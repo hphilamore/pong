@@ -16,6 +16,7 @@ RED = (255,0,0)
 GREEN = (0,255,0)
 BLACK = (0,0,0)
 
+
 # globals
 WIDTH = 600
 HEIGHT = 400 
@@ -30,6 +31,8 @@ paddle1_vel = 0
 paddle2_vel = 0
 l_score = 0
 r_score = 0
+paddle1_pos = [PAD_WIDTH//2 - 1,HEIGHT//2]
+paddle2_pos = [WIDTH +1 - PAD_WIDTH//2,HEIGHT//2]
 
 
 game_builder.WIDTH = WIDTH
@@ -40,6 +43,8 @@ game_builder.x = x
 game_builder.y = y
 game_builder.l_score= l_score
 game_builder.r_score = r_score
+game_builder.paddle1_pos = paddle1_pos
+game_builder.paddle2_pos = paddle2_pos
 
 #canvas declaration
 window = pygame.display.set_mode((WIDTH, HEIGHT), 0, 32)
@@ -47,33 +52,33 @@ game_builder.window = window
 
 # helper function that spawns a ball, returns a position vector and a velocity vector
 # if right is True, spawn to the right, else spawn to the left
-def ball_init(right):
-    global BALL_POS, BALL_START_POS, ball_vel # these are vectors stored as lists
-    BALL_POS = [WIDTH//2,HEIGHT//2]
-    print(WIDTH)
-    print(HEIGHT)
-    print(BALL_POS)
-    horz = random.randrange(2,4)
-    vert = random.randrange(1,3)
+# def ball_init(right):
+#     global BALL_POS, BALL_START_POS, ball_vel # these are vectors stored as lists
+#     BALL_POS = [WIDTH//2,HEIGHT//2]
+#     print(WIDTH)
+#     print(HEIGHT)
+#     print(BALL_POS)
+#     horz = random.randrange(2,4)
+#     vert = random.randrange(1,3)
     
-    if right == False:
-        horz = - horz
+#     if right == False:
+#         horz = - horz
         
-    ball_vel = [horz,-vert]
-    #game_builder.ball_vel = ball_vel
+#     ball_vel = [horz,-vert]
+#     #game_builder.ball_vel = ball_vel
 
-# define event handlers
-def init():
-    global paddle1_pos, paddle2_pos, paddle1_vel, paddle2_vel,l_score,r_score  # these are floats
-    global score1, score2  # these are ints
-    paddle1_pos = [PAD_WIDTH//2 - 1,HEIGHT//2]
-    paddle2_pos = [WIDTH +1 - PAD_WIDTH//2,HEIGHT//2]
-    l_score = 0
-    r_score = 0
-    if random.randrange(0,2) == 0:
-        ball_init(True)
-    else:
-        ball_init(False)
+# # define event handlers
+# def init():
+#     global paddle1_pos, paddle2_pos, paddle1_vel, paddle2_vel,l_score,r_score  # these are floats
+#     global score1, score2  # these are ints
+#     paddle1_pos = [PAD_WIDTH//2 - 1,HEIGHT//2]
+#     paddle2_pos = [WIDTH +1 - PAD_WIDTH//2,HEIGHT//2]
+#     l_score = 0
+#     r_score = 0
+#     if random.randrange(0,2) == 0:
+#         ball_init(True)
+#     else:
+#         ball_init(False)
 
 # def draw_board(colour=(255,255,255), *, screen=window):
 #     "Draws the marker lines in the colour specified"    
@@ -116,51 +121,51 @@ def init():
 
 
 
-def draw_ball(radius, ball_pos, colour=(0,255,0), *,
-              bounce_vert=True, bounce_horiz=False, 
-              screen=window):
+# def draw_ball(radius, ball_pos, colour=(0,255,0), *,
+#               bounce_vert=True, bounce_horiz=False, 
+#               screen=window):
 
-    "Draws a circle of the radius specified, centered about the point specified"
+#     "Draws a circle of the radius specified, centered about the point specified"
 
-    global BALL_POS, ball_vel, l_score, r_score
+#     global BALL_POS, ball_vel, l_score, r_score
 
-    pygame.draw.circle(screen, colour, BALL_POS, radius)
+#     pygame.draw.circle(screen, colour, BALL_POS, radius)
 
-    #ball collision check on top and bottom walls
-    if bounce_vert:
-        if int(BALL_POS[y]) <= BALL_RADIUS         : ball_vel[y] = -ball_vel[y]
-        if int(BALL_POS[y]) >= HEIGHT - BALL_RADIUS: ball_vel[y] = -ball_vel[y]
+#     #ball collision check on top and bottom walls
+#     if bounce_vert:
+#         if int(BALL_POS[y]) <= BALL_RADIUS         : ball_vel[y] = -ball_vel[y]
+#         if int(BALL_POS[y]) >= HEIGHT - BALL_RADIUS: ball_vel[y] = -ball_vel[y]
 
-    if bounce_horiz:
-        if int(BALL_POS[x]) <= BALL_RADIUS         : ball_vel[x] = -ball_vel[x]
-        if int(BALL_POS[x]) >= WIDTH - BALL_RADIUS : ball_vel[x] = -ball_vel[x]
+#     if bounce_horiz:
+#         if int(BALL_POS[x]) <= BALL_RADIUS         : ball_vel[x] = -ball_vel[x]
+#         if int(BALL_POS[x]) >= WIDTH - BALL_RADIUS : ball_vel[x] = -ball_vel[x]
 
-    # ball collision with paddles
-    if (int(BALL_POS[x]) <= BALL_RADIUS + PAD_WIDTH 
-        and int(BALL_POS[y]) in range(paddle1_pos[1] 
-            - PAD_HEIGHT//2,paddle1_pos[1] + PAD_HEIGHT//2,1)):
-        ball_vel[x] = -ball_vel[x]
-        ball_vel[x] *= 1.1
-        ball_vel[y] *= 1.1
+#     # ball collision with paddles
+#     if (int(BALL_POS[x]) <= BALL_RADIUS + PAD_WIDTH 
+#         and int(BALL_POS[y]) in range(paddle1_pos[1] 
+#             - PAD_HEIGHT//2,paddle1_pos[1] + PAD_HEIGHT//2,1)):
+#         ball_vel[x] = -ball_vel[x]
+#         ball_vel[x] *= 1.1
+#         ball_vel[y] *= 1.1
 
-    elif int(BALL_POS[x]) <= BALL_RADIUS + PAD_WIDTH:
-        r_score += 1
-        ball_init(True)
-        print("INITIALISE_BALL")
-        print(BALL_POS)
+#     elif int(BALL_POS[x]) <= BALL_RADIUS + PAD_WIDTH:
+#         r_score += 1
+#         ball_init(True)
+#         print("INITIALISE_BALL")
+#         print(BALL_POS)
         
-    if (int(BALL_POS[x]) >= WIDTH + 1 - BALL_RADIUS - PAD_WIDTH 
-    and int(BALL_POS[y]) in range(paddle2_pos[1] 
-        - PAD_HEIGHT//2,paddle2_pos[1] + PAD_HEIGHT//2,1)):
-        ball_vel[x] = -ball_vel[x]
-        ball_vel[x] *= 1.1
-        ball_vel[y] *= 1.1
+#     if (int(BALL_POS[x]) >= WIDTH + 1 - BALL_RADIUS - PAD_WIDTH 
+#     and int(BALL_POS[y]) in range(paddle2_pos[1] 
+#         - PAD_HEIGHT//2,paddle2_pos[1] + PAD_HEIGHT//2,1)):
+#         ball_vel[x] = -ball_vel[x]
+#         ball_vel[x] *= 1.1
+#         ball_vel[y] *= 1.1
 
-    elif int(BALL_POS[x]) >= WIDTH + 1 - BALL_RADIUS - PAD_WIDTH:
-        l_score += 1
-        ball_init(False)
-        print("INITIALISE_BALL")
-        print(BALL_POS)
+#     elif int(BALL_POS[x]) >= WIDTH + 1 - BALL_RADIUS - PAD_WIDTH:
+#         l_score += 1
+#         ball_init(False)
+#         print("INITIALISE_BALL")
+#         print(BALL_POS)
 
 
 
@@ -173,6 +178,31 @@ def draw(canvas):
            
     canvas.fill(BLACK)
     draw_board()
+
+    # BALL_POS[x] += int(ball_vel[x])
+    # BALL_POS[y] += int(ball_vel[y])
+
+    #draw_ball(BALL_RADIUS, BALL_POS, RED)
+
+    draw_ball(BALL_RADIUS, BALL_POS, colour=(0,255,0))
+    print("ball vel=", ball_vel)
+
+    # draw_paddle(PAD_HEIGHT, PAD_WIDTH, paddle1_pos, paddle1_vel, GREEN)
+
+    # draw_paddle(PAD_HEIGHT, PAD_WIDTH, paddle2_pos, paddle2_vel, colour=(0,0,255))
+    
+
+    # bounce_pad_collision(BALL_POS, paddle1_pos, BALL_RADIUS)
+    # bounce_pad_collision(BALL_POS, paddle2_pos, BALL_RADIUS)
+    # ball_reset_on_win(BALL_POS, BALL_RADIUS)
+    # update_scores()
+
+    # draw_ball(BALL_RADIUS, BALL_POS, colour=(0,255,0))
+    # print(ball_vel)
+
+    
+
+
     # # draw the board
     # pygame.draw.line(canvas, WHITE, [WIDTH // 2, 0],[WIDTH / 2, HEIGHT], 1)
     # pygame.draw.line(canvas, WHITE, [PAD_WIDTH, 0],[PAD_WIDTH, HEIGHT], 1)
@@ -198,9 +228,7 @@ def draw(canvas):
     # elif paddle2_pos[1] == HEIGHT - PAD_HEIGHT//2 and paddle2_vel < 0:
     #     paddle2_pos[1] += paddle2_vel
 
-    #update ball
-    BALL_POS[x] += int(ball_vel[x])
-    BALL_POS[y] += int(ball_vel[y])
+    
 
     #draw paddles and ball
     #pygame.draw.circle(canvas, RED, ball_pos, 20)
@@ -217,20 +245,8 @@ def draw(canvas):
     #      [paddle2_pos[x] + PAD_WIDTH//2, paddle2_pos[y] + PAD_HEIGHT//2], 
     #      [paddle2_pos[x] + PAD_WIDTH//2, paddle2_pos[y] - PAD_HEIGHT//2]], 0)
 
+   #update ball
    
-
-    #draw_ball(BALL_RADIUS, BALL_POS, RED)
-
-    #draw_ball(BALL_RADIUS, BALL_POS, ball_vel, colour=(0,255,0))
-    #print(ball_vel)
-
-    draw_ball(BALL_RADIUS, BALL_POS, colour=(0,255,0))
-    print(ball_vel)
-
-    draw_paddle(PAD_HEIGHT, PAD_WIDTH, paddle1_pos, paddle1_vel, GREEN)
-
-    draw_paddle(PAD_HEIGHT, PAD_WIDTH, paddle2_pos, paddle2_vel, colour=(0,0,255))
-    
     
 
     # #ball collision check on top and bottom walls
@@ -264,13 +280,13 @@ def draw(canvas):
     #     ball_init(False)
 
     #update scores
-    myfont1 = pygame.font.SysFont("Comic Sans MS", 20)
-    label1 = myfont1.render("Score "+str(l_score), 1, (255,255,0))
-    canvas.blit(label1, (50,20))
+    # myfont1 = pygame.font.SysFont("Comic Sans MS", 20)
+    # label1 = myfont1.render("Score "+str(l_score), 1, (255,255,0))
+    # canvas.blit(label1, (50,20))
 
-    myfont2 = pygame.font.SysFont("Comic Sans MS", 20)
-    label2 = myfont2.render("Score "+str(r_score), 1, (255,255,0))
-    canvas.blit(label2, (470, 20))  
+    # myfont2 = pygame.font.SysFont("Comic Sans MS", 20)
+    # label2 = myfont2.render("Score "+str(r_score), 1, (255,255,0))
+    # canvas.blit(label2, (470, 20))  
 
    
     
