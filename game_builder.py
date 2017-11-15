@@ -9,9 +9,6 @@ from pygame.locals import *
 def ball_init(right):
     global BALL_POS, BALL_START_POS, ball_vel # these are vectors stored as lists
     BALL_POS = [WIDTH//2,HEIGHT//2]
-    print(WIDTH)
-    print(HEIGHT)
-    print(BALL_POS)
     horz = random.randrange(2,4)
     vert = random.randrange(1,3)
     
@@ -42,7 +39,7 @@ def draw_board(colour=(255,255,255)):
     pygame.draw.line(window,   colour, [WIDTH // 2, 0],[WIDTH / 2, HEIGHT], 1)
     pygame.draw.line(window,   colour, [PAD_WIDTH, 0],[PAD_WIDTH, HEIGHT], 1)
     pygame.draw.line(window,   colour, [WIDTH - PAD_WIDTH, 0],[WIDTH - PAD_WIDTH, HEIGHT], 1)
-    pygame.draw.circle(window, colour, [WIDTH//2, HEIGHT//2], 70, 1)
+    pygame.draw.circle(window, colour, [WIDTH//2, HEIGHT//2], HEIGHT//6, 1)
 
 
 # def draw_ball(radius, ball_pos, ball_vel, colour=(0,255,0), *,
@@ -69,7 +66,7 @@ def draw_ball(radius, colour=(0,255,0), *,
 
     "Draws a circle of the radius specified, centered about the point specified"
 
-    global window, l_score, r_score, ball_vel, BALL_POS
+    global window, l_score, r_score, BALL_POS, ball_vel
 
     BALL_POS[x] += int(ball_vel[x])
     BALL_POS[y] += int(ball_vel[y])
@@ -86,34 +83,37 @@ def draw_ball(radius, colour=(0,255,0), *,
         if int(BALL_POS[x]) >= WIDTH - radius  : ball_vel[x] = -ball_vel[x]
 
 
-def bounce_pad_collision(ball_pos, paddle_pos, radius):
+def bounce_pad_collision(paddle_pos):
     # ball collision with paddles
-    global ball_vel
-    if (int(ball_pos[x]) <= radius + PAD_WIDTH 
-        and int(ball_pos[y]) in range(paddle_pos[1] 
-            - PAD_HEIGHT//2,paddle_pos[1] + PAD_HEIGHT//2,1)):
+    global ball_vel, BALL_RADIUS, BALL_POS
+
+    if (int(BALL_POS[x]) <= (BALL_RADIUS + PAD_WIDTH) 
+        and 
+        int(BALL_POS[y]) 
+        in range(paddle_pos[1] - PAD_HEIGHT//2,
+                 paddle_pos[1] + PAD_HEIGHT//2,1)):
+
         ball_vel[x] = -ball_vel[x]
         ball_vel[x] *= 1.1
         ball_vel[y] *= 1.1
 
 
 
-def ball_reset_on_win(ball_pos, radius):
+def ball_reset_on_win():
 
-    global l_score, r_score, BALL_POS
+    global l_score, r_score, BALL_POS, BALL_RADIUS
 
-    if int(BALL_POS[x]) <= radius + PAD_WIDTH:
-        r_score += 1
-        ball_init(True)
-        print("INITIALISE_BALL")
-        print(BALL_POS)
+
         
 
-    elif int(BALL_POS[x]) >= WIDTH + 1 - radius - PAD_WIDTH:
+    if int(BALL_POS[x]) <= BALL_RADIUS: #+ PAD_WIDTH:
+        r_score += 1
+        ball_init(True)        
+
+    elif int(BALL_POS[x]) >= WIDTH - BALL_RADIUS#+ 1 - BALL_RADIUS - PAD_WIDTH:
         l_score += 1
         ball_init(False)
-        print("INITIALISE_BALL")
-        print(BALL_POS)
+
 
 
 def update_scores():
@@ -148,9 +148,10 @@ def draw_paddle(pad_height, pad_width, paddle_pos, paddle_vel, colour=(0,255,0))
     #     paddle_pos[y] += paddle_vel
 
         # if paddle in not off the board, or touching the edge but moving towards the centre, keep moving
-    if ((paddle_pos[y] > PAD_HEIGHT//2 and paddle_pos[y] < HEIGHT - PAD_HEIGHT//2) or
-        (paddle_pos[y] == PAD_HEIGHT//2 and paddle_vel > 0) or
+    if ((paddle_pos[y] > pad_height//2 and paddle_pos[y] < HEIGHT - pad_height//2) or
+        (paddle_pos[y] == pad_height//2 and paddle_vel > 0) or
         (paddle_pos[y] == HEIGHT - PAD_HEIGHT//2 and paddle_vel < 0)):
+
         paddle_pos[y] += paddle_vel
 
     pygame.draw.polygon(window, colour, 
