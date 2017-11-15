@@ -65,7 +65,7 @@ def draw_board(colour=(255,255,255)):
 
 
 def draw_ball(radius, ball_pos, colour=(0,255,0), *,
-              bounce_vert=True, bounce_horiz=True):
+              bounce_vert=True, bounce_horiz=False):
 
     "Draws a circle of the radius specified, centered about the point specified"
 
