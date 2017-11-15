@@ -87,34 +87,33 @@ def bounce_pad_collision(paddle_pos):
     # ball collision with paddles
     global ball_vel, BALL_RADIUS, BALL_POS
 
-    if (int(BALL_POS[x]) <= (BALL_RADIUS + PAD_WIDTH) 
+    # if (int(BALL_POS[x]) <= (BALL_RADIUS + PAD_WIDTH) 
+    #     and 
+    #     int(BALL_POS[y]) 
+    #     in range(paddle_pos[1] - PAD_HEIGHT//2,
+    #              paddle_pos[1] + PAD_HEIGHT//2,1)):
+
+
+    if (abs(BALL_POS[x] - paddle_pos[x]) < (BALL_RADIUS)
         and 
-        int(BALL_POS[y]) 
-        in range(paddle_pos[1] - PAD_HEIGHT//2,
-                 paddle_pos[1] + PAD_HEIGHT//2,1)):
+        int(BALL_POS[y]) in range(paddle_pos[1] - PAD_HEIGHT//2,
+                                  paddle_pos[1] + PAD_HEIGHT//2,1)):
 
         ball_vel[x] = -ball_vel[x]
         ball_vel[x] *= 1.1
         ball_vel[y] *= 1.1
 
-
-
 def ball_reset_on_win():
 
-    global l_score, r_score, BALL_POS, BALL_RADIUS
+    global l_score, r_score, BALL_POS, BALL_RADIUS        
 
-
-        
-
-    if int(BALL_POS[x]) <= BALL_RADIUS: #+ PAD_WIDTH:
+    if int(BALL_POS[x]) <= BALL_RADIUS: 
         r_score += 1
         ball_init(True)        
 
-    elif int(BALL_POS[x]) >= WIDTH - BALL_RADIUS#+ 1 - BALL_RADIUS - PAD_WIDTH:
+    elif int(BALL_POS[x]) > WIDTH - BALL_RADIUS:
         l_score += 1
         ball_init(False)
-
-
 
 def update_scores():
     #update scores

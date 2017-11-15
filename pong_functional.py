@@ -32,8 +32,11 @@ paddle2_vel = 0
 l_score = 0
 r_score = 0
 
-paddle1_pos = [PAD_WIDTH//2 - 1,HEIGHT//2]
+paddle1_pos = [PAD_WIDTH//2 - 1,       HEIGHT//2]
 paddle2_pos = [WIDTH +1 - PAD_WIDTH//2,HEIGHT//2]
+
+# paddle1_pos = [PAD_WIDTH//2,        HEIGHT//2]
+# paddle2_pos = [WIDTH - PAD_WIDTH//2,HEIGHT//2]
 
 game_builder.BALL_RADIUS = BALL_RADIUS
 game_builder.WIDTH = WIDTH
@@ -57,47 +60,39 @@ def draw():
            
     window.fill(BLACK)
     draw_board()
-
-
-    #draw_ball(BALL_RADIUS, BALL_POS, RED)
-
     draw_ball(BALL_RADIUS, colour=(0,255,0))
-    draw_paddle(PAD_HEIGHT, PAD_WIDTH, paddle1_pos, paddle1_vel, GREEN)
+    draw_paddle(PAD_HEIGHT, PAD_WIDTH, paddle1_pos, paddle1_vel, colour=(0,0,255))
     draw_paddle(PAD_HEIGHT, PAD_WIDTH, paddle2_pos, paddle2_vel, colour=(0,0,255))
-    print(paddle1_pos, paddle2_pos)
-    
-
+    print(paddle1_pos, paddle2_pos) 
     bounce_pad_collision(paddle1_pos)
     bounce_pad_collision(paddle2_pos)
-    ball_reset_on_win()
-
-   
+    ball_reset_on_win()   
     
 #keydown handler
-def keydown(event):
-    global paddle1_vel, paddle2_vel
+# def keydown(event):
+#     global paddle1_vel, paddle2_vel
     
-    if event.key == K_UP:
-        paddle2_vel = -8
+#     if event.key == K_UP:
+#         paddle2_vel = -8
 
-    elif event.key == K_DOWN:
-        paddle2_vel = 8
+#     elif event.key == K_DOWN:
+#         paddle2_vel = 8
 
-    elif event.key == K_w:
-        paddle1_vel = -8
+#     elif event.key == K_w:
+#         paddle1_vel = -8
 
-    elif event.key == K_s:
-        paddle1_vel = 8
+#     elif event.key == K_s:
+#         paddle1_vel = 8
 
-#keyup handler
-def keyup(event):
-    global paddle1_vel, paddle2_vel
+# #keyup handler
+# def keyup(event):
+#     global paddle1_vel, paddle2_vel
     
-    if event.key in (K_w, K_s):
-        paddle1_vel = 0
+#     if event.key in (K_w, K_s):
+#         paddle1_vel = 0
 
-    elif event.key in (K_UP, K_DOWN):
-        paddle2_vel = 0
+#     elif event.key in (K_UP, K_DOWN):
+#         paddle2_vel = 0
 
 init()
 
@@ -107,15 +102,33 @@ while True:
 
     draw()
 
-    for event in pygame.event.get():
+    event = pygame.event.poll()
 
-        if event.type == KEYDOWN:
-            keydown(event)
-        elif event.type == KEYUP:
-            keyup(event)
-        elif event.type == QUIT:
-            pygame.quit()
-            sys.exit()
+    if event.type == pygame.QUIT:
+        pygame.quit()
+        sys.exit()
+
+
+    pressed = pygame.key.get_pressed()
+    if pressed[pygame.K_UP] & pressed[pygame.K_DOWN]: paddle2_vel = 0
+    elif pressed[pygame.K_UP]: paddle2_vel = -8
+    elif pressed[pygame.K_DOWN]: paddle2_vel = 8
+    else: paddle2_vel = 0
+
+    if pressed[pygame.K_w] & pressed[pygame.K_s]: paddle1_vel = 0
+    elif pressed[pygame.K_w]: paddle1_vel = -8
+    elif pressed[pygame.K_s]: paddle1_vel = 8
+    else: paddle1_vel = 0
+
+    # for event in pygame.event.get():
+
+    #     if event.type == KEYDOWN:
+    #         keydown(event)
+    #     elif event.type == KEYUP:
+    #         keyup(event)
+        # elif event.type == QUIT:
+        #     pygame.quit()
+        #     sys.exit()
             
     pygame.display.update()
     fps.tick(60)
