@@ -184,16 +184,15 @@ def draw(canvas):
 
     #draw_ball(BALL_RADIUS, BALL_POS, RED)
 
-    draw_ball(BALL_RADIUS, BALL_POS, colour=(0,255,0))
-    print("ball vel=", ball_vel)
+    draw_ball(BALL_RADIUS, colour=(0,255,0))
+    print(BALL_POS)
+    # draw_paddle(PAD_HEIGHT, PAD_WIDTH, paddle1_pos, paddle1_vel, GREEN)
 
-    draw_paddle(PAD_HEIGHT, PAD_WIDTH, paddle1_pos, paddle1_vel, GREEN)
-
-    draw_paddle(PAD_HEIGHT, PAD_WIDTH, paddle2_pos, paddle2_vel, colour=(0,0,255))
+    # draw_paddle(PAD_HEIGHT, PAD_WIDTH, paddle2_pos, paddle2_vel, colour=(0,0,255))
     
 
-    #bounce_pad_collision(BALL_POS, paddle1_pos, BALL_RADIUS)
-    #bounce_pad_collision(BALL_POS, paddle2_pos, BALL_RADIUS)
+    # #bounce_pad_collision(BALL_POS, paddle1_pos, BALL_RADIUS)
+    # #bounce_pad_collision(BALL_POS, paddle2_pos, BALL_RADIUS)
     ball_reset_on_win(BALL_POS, BALL_RADIUS)
     # update_scores()
 

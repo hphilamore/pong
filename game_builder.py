@@ -64,26 +64,26 @@ def draw_board(colour=(255,255,255)):
 
 
 
-def draw_ball(radius, ball_pos, colour=(0,255,0), *,
+def draw_ball(radius, colour=(0,255,0), *,
               bounce_vert=True, bounce_horiz=False):
 
     "Draws a circle of the radius specified, centered about the point specified"
 
-    global window, l_score, r_score, ball_vel
+    global window, l_score, r_score, ball_vel, BALL_POS
 
-    ball_pos[x] += int(ball_vel[x])
-    ball_pos[y] += int(ball_vel[y])
+    BALL_POS[x] += int(ball_vel[x])
+    BALL_POS[y] += int(ball_vel[y])
 
-    pygame.draw.circle(window, colour, ball_pos, radius)
+    pygame.draw.circle(window, colour, BALL_POS, radius)
 
     #ball collision check on top and bottom walls
     if bounce_vert:
-        if int(ball_pos[y]) <= radius         : ball_vel[y] = -ball_vel[y]
-        if int(ball_pos[y]) >= HEIGHT - radius: ball_vel[y] = -ball_vel[y]
+        if int(BALL_POS[y]) <= radius         : ball_vel[y] = -ball_vel[y]
+        if int(BALL_POS[y]) >= HEIGHT - radius: ball_vel[y] = -ball_vel[y]
 
     if bounce_horiz:
-        if int(ball_pos[x]) <= radius         : ball_vel[x] = -ball_vel[x]
-        if int(ball_pos[x]) >= WIDTH - radius  : ball_vel[x] = -ball_vel[x]
+        if int(BALL_POS[x]) <= radius         : ball_vel[x] = -ball_vel[x]
+        if int(BALL_POS[x]) >= WIDTH - radius  : ball_vel[x] = -ball_vel[x]
 
 
 def bounce_pad_collision(ball_pos, paddle_pos, radius):
@@ -100,16 +100,16 @@ def bounce_pad_collision(ball_pos, paddle_pos, radius):
 
 def ball_reset_on_win(ball_pos, radius):
 
-    global l_score, r_score
+    global l_score, r_score, BALL_POS
 
-    if int(ball_pos[x]) <= radius + PAD_WIDTH:
+    if int(BALL_POS[x]) <= radius + PAD_WIDTH:
         r_score += 1
         ball_init(True)
         print("INITIALISE_BALL")
-        print(ball_pos)
+        print(BALL_POS)
         
 
-    elif int(ball_pos[x]) >= WIDTH + 1 - radius - PAD_WIDTH:
+    elif int(BALL_POS[x]) >= WIDTH + 1 - radius - PAD_WIDTH:
         l_score += 1
         ball_init(False)
         print("INITIALISE_BALL")
