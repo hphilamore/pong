@@ -7,7 +7,8 @@ from pygame.locals import *
 
 
 def ball_init(right):
-    global BALL_POS, BALL_START_POS, ball_vel # these are vectors stored as lists
+    "Places the ball in the centre of the board and gives it a random velocity"
+    global BALL_POS, BALL_START_POS, ball_vel 
     BALL_POS = [WIDTH//2,HEIGHT//2]
     horz = random.randrange(2,4)
     vert = random.randrange(1,3)
@@ -16,12 +17,11 @@ def ball_init(right):
         horz = - horz
         
     ball_vel = [horz,-vert]
-    #game_builder.ball_vel = ball_vel
 
-# define event handlers
+
 def init():
-    global paddle1_pos, paddle2_pos, paddle1_vel, paddle2_vel,l_score,r_score  # these are floats
-    #global score1, score2  # these are ints
+    "Vertically centres the paddles"
+    global paddle1_pos, paddle2_pos, paddle1_vel, paddle2_vel,l_score,r_score
     paddle1_pos = [PAD_WIDTH//2 - 1,HEIGHT//2]
     paddle2_pos = [WIDTH +1 - PAD_WIDTH//2,HEIGHT//2]
     l_score = 0
@@ -30,6 +30,7 @@ def init():
         ball_init(True)
     else:
         ball_init(False)
+
 
 def draw_board(colour=(255,255,255)):
     "Draws the marker lines in the colour specified"  
@@ -70,8 +71,27 @@ def draw_ball(radius, colour=(0,255,0), *,
         ball_init(False)
 
 
+def draw_paddle(pad_height, pad_width, paddle_pos, paddle_vel, colour=(0,255,0)):
+    "Draws a rectangular paddle, of the height and width specified, centered at the position specified"
+
+    global window
+
+    # if paddle in not off the board, or touching the edge but moving towards the centre, keep moving
+    if ((paddle_pos[y] > pad_height//2 and paddle_pos[y] < HEIGHT - pad_height//2) or
+        (paddle_pos[y] == pad_height//2 and paddle_vel[y] > 0) or
+        (paddle_pos[y] == HEIGHT - PAD_HEIGHT//2 and paddle_vel[y] < 0)):
+
+        paddle_pos[y] += paddle_vel[y]
+
+    pygame.draw.polygon(window, colour, 
+            [[paddle_pos[x] - pad_width/2, paddle_pos[y] - pad_height/2], 
+             [paddle_pos[x] - pad_width/2, paddle_pos[y] + pad_height/2], 
+             [paddle_pos[x] + pad_width/2, paddle_pos[y] + pad_height/2], 
+             [paddle_pos[x] + pad_width/2, paddle_pos[y] - pad_height/2]])
+
+
 def bounce_pad_collision(paddle_pos):
-    # ball collision with paddles
+    "Ball bounces when colliding with paddles" 
     global ball_vel, BALL_RADIUS, BALL_POS
 
     if (abs(BALL_POS[x] - paddle_pos[x]) < (BALL_RADIUS)
@@ -83,15 +103,6 @@ def bounce_pad_collision(paddle_pos):
         ball_vel[x] *= 1.1
         ball_vel[y] *= 1.1
 
-def score_win():
-
-    global l_score, r_score, BALL_POS, BALL_RADIUS        
-
-    if int(BALL_POS[x]) <= BALL_RADIUS: 
-        r_score += 1
-
-    elif int(BALL_POS[x]) > WIDTH - BALL_RADIUS:
-        l_score += 1
 
 def ball_reset_on_win():
 
@@ -103,34 +114,23 @@ def ball_reset_on_win():
     elif int(BALL_POS[x]) > WIDTH - BALL_RADIUS:
         ball_init(False)
 
+
 def update_scores(font="Comic Sans MS", font_size=20):
+    global l_score, r_score, BALL_POS, BALL_RADIUS        
+
+    if int(BALL_POS[x]) <= BALL_RADIUS: 
+        r_score += 1
+
+    elif int(BALL_POS[x]) > WIDTH - BALL_RADIUS:
+        l_score += 1
+
     myfont = pygame.font.SysFont(font, font_size)
     label1 = myfont.render("Score "+str(l_score), 1, (255,255,0))
-    #window.blit(label1, (50,20))
-    window.blit(label1, ((WIDTH/5),20))
-
-    myfont2 = pygame.font.SysFont("Comic Sans MS", 20)
     label2 = myfont.render("Score "+str(r_score), 1, (255,255,0))
+    window.blit(label1, ((WIDTH/5),20))
     window.blit(label2, ((3*WIDTH/4), 20)) 
 
 
-def draw_paddle(pad_height, pad_width, paddle_pos, paddle_vel, colour=(0,255,0)):
-    "Draws a rectangular paddle, of the height and width specified, centered at the position specified"
-
-    global window
-
-    # if paddle in not off the board, or touching the edge but moving towards the centre, keep moving
-    if ((paddle_pos[y] > pad_height//2 and paddle_pos[y] < HEIGHT - pad_height//2) or
-        (paddle_pos[y] == pad_height//2 and paddle_vel > 0) or
-        (paddle_pos[y] == HEIGHT - PAD_HEIGHT//2 and paddle_vel < 0)):
-
-        paddle_pos[y] += paddle_vel
-
-    pygame.draw.polygon(window, colour, 
-            [[paddle_pos[x] - pad_width/2, paddle_pos[y] - pad_height/2], 
-             [paddle_pos[x] - pad_width/2, paddle_pos[y] + pad_height/2], 
-             [paddle_pos[x] + pad_width/2, paddle_pos[y] + pad_height/2], 
-             [paddle_pos[x] + pad_width/2, paddle_pos[y] - pad_height/2]])
 
 
 

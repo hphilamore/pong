@@ -1,5 +1,4 @@
 #PONG pygame
-
 import random
 import pygame, sys
 from pygame.locals import *
@@ -23,8 +22,8 @@ PAD_WIDTH = 8
 PAD_HEIGHT = 80
 BALL_RADIUS = 20
 ball_vel = [0,0]
-paddle1_vel = 0
-paddle2_vel = 0
+paddle1_vel = [0,0]
+paddle2_vel = [0,0]
 BALL_POS = [WIDTH//2,HEIGHT//2]
 paddle1_pos = [PAD_WIDTH//2 - 1,        HEIGHT//2]
 paddle2_pos = [WIDTH +1 - PAD_WIDTH//2, HEIGHT//2]
@@ -55,8 +54,9 @@ def draw():
     print(paddle1_pos, paddle2_pos) 
     bounce_pad_collision(paddle1_pos)
     bounce_pad_collision(paddle2_pos)
-    ball_reset_on_win() 
     update_scores()  
+    ball_reset_on_win() 
+    
 
 init()
 
@@ -72,15 +72,15 @@ while True:
         sys.exit()
 
     pressed = pygame.key.get_pressed()
-    if pressed[pygame.K_UP] & pressed[pygame.K_DOWN]: paddle2_vel = 0
-    elif pressed[pygame.K_UP]: paddle2_vel = -8
-    elif pressed[pygame.K_DOWN]: paddle2_vel = 8
-    else: paddle2_vel = 0
+    if pressed[pygame.K_UP] & pressed[pygame.K_DOWN]: paddle2_vel[y] = 0
+    elif pressed[pygame.K_UP]: paddle2_vel[y] = -8
+    elif pressed[pygame.K_DOWN]: paddle2_vel[y] = 8
+    else: paddle2_vel[y] = 0
 
-    if pressed[pygame.K_w] & pressed[pygame.K_s]: paddle1_vel = 0
-    elif pressed[pygame.K_w]: paddle1_vel = -8
-    elif pressed[pygame.K_s]: paddle1_vel = 8
-    else: paddle1_vel = 0
+    if pressed[pygame.K_w] & pressed[pygame.K_s]: paddle1_vel[y] = 0
+    elif pressed[pygame.K_w]: paddle1_vel[y] = -8
+    elif pressed[pygame.K_s]: paddle1_vel[y] = 8
+    else: paddle1_vel[y] = 0
             
     pygame.display.update()
     clock.tick(60)
