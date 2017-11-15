@@ -31,8 +31,6 @@ def init():
     else:
         ball_init(False)
 
-
-
 def draw_board(colour=(255,255,255)):
     "Draws the marker lines in the colour specified"  
     global window, PAD_WIDTH, HEIGHT, WIDTH
@@ -40,25 +38,6 @@ def draw_board(colour=(255,255,255)):
     pygame.draw.line(window,   colour, [PAD_WIDTH, 0],[PAD_WIDTH, HEIGHT], 1)
     pygame.draw.line(window,   colour, [WIDTH - PAD_WIDTH, 0],[WIDTH - PAD_WIDTH, HEIGHT], 1)
     pygame.draw.circle(window, colour, [WIDTH//2, HEIGHT//2], HEIGHT//6, 1)
-
-
-# def draw_ball(radius, ball_pos, ball_vel, colour=(0,255,0), *,
-#               bounce_vert=True, bounce_horiz=False):
-#     "Draws a circle of the radius specified, centered about the point specified"
-
-#     global window
-
-#     pygame.draw.circle(window, colour, ball_pos, radius)
-
-#     #ball collision check on top and bottom walls
-#     if bounce_vert:
-#         if int(ball_pos[y]) <= radius         : ball_vel[y] = -ball_vel[y]
-#         if int(ball_pos[y]) >= HEIGHT - radius: ball_vel[y] = -ball_vel[y]
-
-#     # if bounce_horiz:
-#     #     if int(ball_pos[x]) <= radius         : ball_vel[x] = -ball_vel[x]
-#     #     if int(ball_pos[x]) >= WIDTH - radius : ball_vel[x] = -ball_vel[x]
-
 
 
 def draw_ball(radius, colour=(0,255,0), *,
@@ -82,17 +61,18 @@ def draw_ball(radius, colour=(0,255,0), *,
         if int(BALL_POS[x]) <= radius         : ball_vel[x] = -ball_vel[x]
         if int(BALL_POS[x]) >= WIDTH - radius  : ball_vel[x] = -ball_vel[x]
 
+    if int(BALL_POS[x]) <= BALL_RADIUS: 
+        r_score += 1
+        ball_init(True)        
+
+    elif int(BALL_POS[x]) > WIDTH - BALL_RADIUS:
+        l_score += 1
+        ball_init(False)
+
 
 def bounce_pad_collision(paddle_pos):
     # ball collision with paddles
     global ball_vel, BALL_RADIUS, BALL_POS
-
-    # if (int(BALL_POS[x]) <= (BALL_RADIUS + PAD_WIDTH) 
-    #     and 
-    #     int(BALL_POS[y]) 
-    #     in range(paddle_pos[1] - PAD_HEIGHT//2,
-    #              paddle_pos[1] + PAD_HEIGHT//2,1)):
-
 
     if (abs(BALL_POS[x] - paddle_pos[x]) < (BALL_RADIUS)
         and 
@@ -103,28 +83,35 @@ def bounce_pad_collision(paddle_pos):
         ball_vel[x] *= 1.1
         ball_vel[y] *= 1.1
 
-def ball_reset_on_win():
+def score_win():
 
     global l_score, r_score, BALL_POS, BALL_RADIUS        
 
     if int(BALL_POS[x]) <= BALL_RADIUS: 
         r_score += 1
-        ball_init(True)        
 
     elif int(BALL_POS[x]) > WIDTH - BALL_RADIUS:
         l_score += 1
+
+def ball_reset_on_win():
+
+    global l_score, r_score, BALL_POS, BALL_RADIUS        
+
+    if int(BALL_POS[x]) <= BALL_RADIUS: 
+        ball_init(True)        
+
+    elif int(BALL_POS[x]) > WIDTH - BALL_RADIUS:
         ball_init(False)
 
-def update_scores():
-    #update scores
-    myfont1 = pygame.font.SysFont("Comic Sans MS", 20)
-    label1 = myfont1.render("Score "+str(l_score), 1, (255,255,0))
-    window.blit(label1, (50,20))
+def update_scores(font="Comic Sans MS", font_size=20):
+    myfont = pygame.font.SysFont(font, font_size)
+    label1 = myfont.render("Score "+str(l_score), 1, (255,255,0))
+    #window.blit(label1, (50,20))
+    window.blit(label1, ((WIDTH/5),20))
 
     myfont2 = pygame.font.SysFont("Comic Sans MS", 20)
-    label2 = myfont2.render("Score "+str(r_score), 1, (255,255,0))
-    window.blit(label2, (470, 20)) 
-
+    label2 = myfont.render("Score "+str(r_score), 1, (255,255,0))
+    window.blit(label2, ((3*WIDTH/4), 20)) 
 
 
 def draw_paddle(pad_height, pad_width, paddle_pos, paddle_vel, colour=(0,255,0)):
@@ -132,21 +119,7 @@ def draw_paddle(pad_height, pad_width, paddle_pos, paddle_vel, colour=(0,255,0))
 
     global window
 
-
-    # # update paddle's vertical position, keep paddle on the screen
-    # # if paddle in not off the board keep moving
-    # if (paddle_pos[y] > PAD_HEIGHT//2 and paddle_pos[y] < HEIGHT - PAD_HEIGHT//2):
-    #     paddle_pos[y] += paddle_vel
-
-    # # if paddle is touching the top of the board, but controller is moving paddle towards the middle of the board, keep moving
-    # elif (paddle_pos[y] == PAD_HEIGHT//2 and paddle_vel > 0):
-    #     paddle_pos[y] += paddle_vel
-
-    # # if paddle is touching the bottom of the board, but controller is moving paddle towards the middle of the board, keep moving
-    # elif (paddle_pos[y] == HEIGHT - PAD_HEIGHT//2 and paddle_vel < 0):
-    #     paddle_pos[y] += paddle_vel
-
-        # if paddle in not off the board, or touching the edge but moving towards the centre, keep moving
+    # if paddle in not off the board, or touching the edge but moving towards the centre, keep moving
     if ((paddle_pos[y] > pad_height//2 and paddle_pos[y] < HEIGHT - pad_height//2) or
         (paddle_pos[y] == pad_height//2 and paddle_vel > 0) or
         (paddle_pos[y] == HEIGHT - PAD_HEIGHT//2 and paddle_vel < 0)):
