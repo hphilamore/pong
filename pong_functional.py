@@ -5,7 +5,7 @@ from pygame.locals import *
 import game_builder
 from game_builder import *
 pygame.init()
-clock = pygame.time.Clock()
+
 
 # colors
 WHITE = (255,255,255)
@@ -75,4 +75,4 @@ while True:
     else: paddle2_vel[y] = 0
             
     pygame.display.update()
-    clock.tick(60)
+    clock = pygame.time.Clock().tick(60)

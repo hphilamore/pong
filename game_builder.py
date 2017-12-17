@@ -2,6 +2,8 @@ import random
 import pygame, sys
 from pygame.locals import *
 
+WIDTH = 600
+HEIGHT = 400
 x = 0
 y = 1
 
@@ -41,7 +43,7 @@ def draw_board(colour=(255,255,255)):
     pygame.draw.circle(window, colour, [WIDTH//2, HEIGHT//2],  HEIGHT//6, 1)
 
 
-def draw_ball(radius, colour=(0,255,0), *,
+def draw_ball(radius, colour=(100, 0,100), *,
               random_movement = False, 
               bounce_vert=False, 
               bounce_horiz=False):
@@ -76,6 +78,8 @@ def draw_ball(radius, colour=(0,255,0), *,
 
 def draw_paddle(pad_height, pad_width, paddle_pos, paddle_vel, colour=(0,255,0)):
     "Draws a rectangular paddle, of the height and width specified, centered at the position specified"
+    "Note that global variables PAD_HEIGHT, PAD_WIDTH and PAD_POS could be used here."
+    "Arguments are included instead for beginner user understability in the main program"
 
     global window
 
@@ -86,7 +90,7 @@ def draw_paddle(pad_height, pad_width, paddle_pos, paddle_vel, colour=(0,255,0))
 
     if ((paddle_pos[y] >= pad_height/2 and paddle_pos[y] <= HEIGHT - pad_height/2) or
         (paddle_pos[y] < pad_height/2 and paddle_vel[y] > 0) or
-        (paddle_pos[y] > HEIGHT - PAD_HEIGHT/2 and paddle_vel[y] < 0)):
+        (paddle_pos[y] > HEIGHT - pad_height/2 and paddle_vel[y] < 0)):
 
         paddle_pos[y] += paddle_vel[y]
 
@@ -99,9 +103,9 @@ def draw_paddle(pad_height, pad_width, paddle_pos, paddle_vel, colour=(0,255,0))
 
 def bounce_pad_collision(paddle_pos):
     "Ball bounces when colliding with paddles" 
-    global ball_vel, BALL_RADIUS, BALL_POS
+    global ball_vel, BALL_RADIUS, BALL_POS, PAD_WIDTH
 
-    if (abs(BALL_POS[x] - paddle_pos[x]) < (BALL_RADIUS)
+    if (abs(BALL_POS[x] - paddle_pos[x] - PAD_WIDTH/2) < (BALL_RADIUS)
         and 
         int(BALL_POS[y]) in range(paddle_pos[1] - PAD_HEIGHT//2,
                                   paddle_pos[1] + PAD_HEIGHT//2,1)):
