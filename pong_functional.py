@@ -33,7 +33,6 @@ gb.PAD_HEIGHT = PAD_HEIGHT
 gb.BALL_RADIUS = BALL_RADIUS
 
 window = game_window(WIDTH, HEIGHT)
-
 gb.window = window
 
 while True:
