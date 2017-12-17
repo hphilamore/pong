@@ -33,6 +33,13 @@ def init():
     else:
         ball_init(False)
 
+def game_window(width, height):
+    global WIDTH, HEIGHT
+    WIDTH = width
+    HEIGHT = height
+    window = pygame.display.set_mode((width, height))
+    return window
+
 
 def draw_board(colour=(255,255,255)):
     "Draws the marker lines in the colour specified"  
@@ -43,7 +50,8 @@ def draw_board(colour=(255,255,255)):
     pygame.draw.circle(window, colour, [WIDTH//2, HEIGHT//2],  HEIGHT//6, 1)
 
 
-def draw_ball(radius, colour=(100, 0,100), *,
+def draw_ball(radius, *, 
+              colour=(0, 255, 0),
               random_movement = False, 
               bounce_vert=False, 
               bounce_horiz=False):
@@ -105,12 +113,14 @@ def bounce_pad_collision(paddle_pos):
     "Ball bounces when colliding with paddles" 
     global ball_vel, BALL_RADIUS, BALL_POS, PAD_WIDTH
 
-    if (abs(BALL_POS[x] - paddle_pos[x] - PAD_WIDTH/2) < (BALL_RADIUS)
+    if (abs(BALL_POS[x] - paddle_pos[x]) - PAD_WIDTH/2 < BALL_RADIUS
         and 
         int(BALL_POS[y]) in range(paddle_pos[1] - PAD_HEIGHT//2,
                                   paddle_pos[1] + PAD_HEIGHT//2,1)):
 
+        # reverses ball direction
         ball_vel[x] = -ball_vel[x]
+        # increases ball velocity
         ball_vel[x] *= 1.1
         ball_vel[y] *= 1.1
 
@@ -127,7 +137,7 @@ def ball_reset_on_win():
         ball_init(False)
 
 
-def update_scores(*,font="Comic Sans MS", font_size=20):
+def update_scores(*,font="Comic Sans MS", font_size=20, colour=(255,255,0)):
     "Increments and dislpays scores when a opint is scored"
     # Available fonts: "Arial",  "Comic Sans MS", "monospace"
     # pygame.font.get_fonts() returns all fonts
@@ -141,9 +151,9 @@ def update_scores(*,font="Comic Sans MS", font_size=20):
         l_score += 1
 
     myfont = pygame.font.SysFont(font, font_size)
-    label1 = myfont.render("Score "+str(l_score), 1, (255,255,0))
-    label2 = myfont.render("Score "+str(r_score), 1, (255,255,0))
-    window.blit(label1, ((WIDTH/5),20))
+    label1 = myfont.render("Score " + str(l_score), 1, colour)
+    label2 = myfont.render("Score " + str(r_score), 1, colour)
+    window.blit(label1, ((WIDTH/5), 20))
     window.blit(label2, ((3*WIDTH/4), 20)) 
 
 
